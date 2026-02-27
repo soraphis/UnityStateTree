@@ -1,7 +1,7 @@
 using NUnit.Framework;
-using StateTree;
+using UnityStateTree;
 
-namespace StateTree.Test
+namespace UnityStateTree.Test
 {
     public partial class StateTreeTest
     {
@@ -84,6 +84,29 @@ namespace StateTree.Test
 
             Assert.IsNotNull(runner.CurrentState);
             Assert.AreEqual("Root", runner.CurrentState.name);
+        }
+
+        [Test]
+        public void TryEvaluateChildrenInOrder_WithNestedValidBranch_ReturnsTrue()
+        {
+            var root = new StateEntry
+            {
+                name = "Root",
+                depth = 0,
+                selectionBehavior = SelectionBehavior.SelectChildrenInOrder
+            }
+            .WithChild(new StateEntry
+            {
+                name = "Branch",
+                selectionBehavior = SelectionBehavior.SelectChildrenInOrder
+            }
+            .WithChild(new StateEntry
+            {
+                name = "Leaf",
+                selectionBehavior = SelectionBehavior.None
+            }));
+
+            Assert.IsTrue(root.TryEvaluate());
         }
 
         #endregion

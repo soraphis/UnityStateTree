@@ -39,13 +39,14 @@ namespace UnityStateTree
             return selectionBehavior switch
             {
                 SelectionBehavior.SelectChildrenInOrder => TryEvaluateChildrenInOrder(),
+                SelectionBehavior.None => true,
                 _ => false
             };
         }
 
         private bool TryEvaluateChildrenInOrder()
         {
-            return children.AnyFast(stateEntry => TryEvaluate());
+            return children.AnyFast(stateEntry => stateEntry.TryEvaluate());
         }
 
         public StateEntry TrySelect(IStateTreeContext context)

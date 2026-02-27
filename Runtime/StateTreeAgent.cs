@@ -2,7 +2,7 @@ global using System;
 global using UnityEngine;
 global using System.Collections.Generic;
 
-public namespace StateTree{
+namespace UnityStateTree{
     public class StateTreeAgent : MonoBehaviour
     {
         public StateTreeObject stateTree;

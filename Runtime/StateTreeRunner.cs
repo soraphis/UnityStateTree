@@ -66,6 +66,8 @@ namespace UnityStateTree
                         case TaskStatus.Interrupted: CompleteState(TransitionTrigger.OnStateFailed); break;
                         default: throw new ArgumentOutOfRangeException();
                     }
+
+                    if (queuedTransition != null) break;
                 }
             }
         }
@@ -84,12 +86,26 @@ namespace UnityStateTree
 
             if (queuedTransition != null)
             {
+                var transition = queuedTransition;
+                queuedTransition = null;
+                var targetState = transition.ResolveTarget(stateTree, currentState, context);
+                EnterState(targetState);
                 return;
             }
 
             foreach (var currentStateTask in currentState.tasks)
             {
-                currentStateTask.OnTick(context);
+                var result = currentStateTask.OnTick(context);
+                switch (result)
+                {
+                    case TaskStatus.Running: break;
+                    case TaskStatus.Success: CompleteState(TransitionTrigger.OnStateCompleted); break;
+                    case TaskStatus.Failure: CompleteState(TransitionTrigger.OnStateFailed); break;
+                    case TaskStatus.Interrupted: CompleteState(TransitionTrigger.OnStateFailed); break;
+                    default: throw new ArgumentOutOfRangeException();
+                }
+
+                if (queuedTransition != null) break;
             }
         }
     }

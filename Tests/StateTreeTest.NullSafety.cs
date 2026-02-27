@@ -1,8 +1,8 @@
 using System;
 using NUnit.Framework;
-using StateTree;
+using UnityStateTree;
 
-namespace StateTree.Test
+namespace UnityStateTree.Test
 {
     public partial class StateTreeTest
     {

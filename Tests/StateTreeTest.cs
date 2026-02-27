@@ -1,9 +1,8 @@
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
-using StateTree;
 
-namespace StateTree.Test{
+namespace UnityStateTree.Test{
 
     public partial class StateTreeTest
     {
@@ -90,6 +89,48 @@ namespace StateTree.Test{
             public override void OnExitState(IStateTreeContext context)
             {
                 ExitCount++;
+            }
+        }
+
+        private class CompleteAndSetFlagOnFirstTickTask : Task
+        {
+            private readonly string flagKey;
+            private bool completed;
+            public int TickCount { get; private set; }
+
+            public CompleteAndSetFlagOnFirstTickTask(string flagKey)
+            {
+                this.flagKey = flagKey;
+            }
+
+            public override TaskStatus OnTick(IStateTreeContext context)
+            {
+                TickCount++;
+                if (completed) return TaskStatus.Running;
+                completed = true;
+                if (context is MockContext mockContext)
+                {
+                    mockContext.SetValue(flagKey, true);
+                }
+                return TaskStatus.Success;
+            }
+        }
+
+        private class CountingTask : Task
+        {
+            public int EnterCount { get; private set; }
+            public int TickCount { get; private set; }
+
+            public override TaskStatus OnEnterState(IStateTreeContext context)
+            {
+                EnterCount++;
+                return TaskStatus.Running;
+            }
+
+            public override TaskStatus OnTick(IStateTreeContext context)
+            {
+                TickCount++;
+                return TaskStatus.Running;
             }
         }
 
