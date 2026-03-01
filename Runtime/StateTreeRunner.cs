@@ -108,6 +108,13 @@ namespace UnityStateTree
 
                 if (queuedTransition != null) break;
             }
+
+            foreach (var transition in currentState.transitions)
+            {
+                if (transition.trigger != TransitionTrigger.OnTick || !transition.IsValid(context)) continue;
+                queuedTransition = transition;
+                break;
+            }
         }
     }
 }

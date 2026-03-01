@@ -8,7 +8,26 @@ The order of root children is important because we use `SelectChildrenInOrder`:
 2. ChaseTarget
 3. SearchForTarget (fallback)
 
-This gives us a clean “best valid option wins” flow.
+This gives us a clean "best valid option wins" flow.
+
+## Complete Transition Matrix
+
+Before looking at the code, it helps to reason about every edge in the graph:
+
+| From | → To | Condition |
+|---|---|---|
+| `SearchForTarget` | `ChaseTarget` | `HasTarget` |
+| `ChaseTarget` | `AttackTarget` | `TargetInAttackRange` |
+| `ChaseTarget` | `SearchForTarget` | `!HasTarget` |
+| `AttackTarget` | `ChaseTarget` | `HasTarget && !InRange` |
+| `AttackTarget` | `SearchForTarget` | `!HasTarget` |
+
+The two `→ SearchForTarget` edges are easy to forget. Without them, a state that returns
+`TaskStatus.Running` forever (like the chase or attack tasks do here) will never exit on its own
+when the target is lost — the monster gets stuck at the last known position.
+
+Transitions inside a state are checked **in order**. Put the more specific condition first so it wins
+over the broader fallback (`!HasTarget`) when both could fire at the same tick.
 
 ```csharp
 using UnityStateTree;
@@ -32,6 +51,7 @@ public static class MonsterBehaviorTreeFactory
                 tasks = { new AttackTargetTask() },
                 transitions =
                 {
+                    // Target moved out of range → chase it
                     new TransitionConditionalWithTarget
                     {
                         trigger = TransitionTrigger.OnTick,
@@ -41,6 +61,13 @@ public static class MonsterBehaviorTreeFactory
                             new HasTargetCondition(),
                             new NotCondition(new TargetInAttackRangeCondition())
                         }
+                    },
+                    // Target lost entirely → go search
+                    new TransitionConditionalWithTarget
+                    {
+                        trigger = TransitionTrigger.OnTick,
+                        targetState = "SearchForTarget",
+                        conditions = { new NotCondition(new HasTargetCondition()) }
                     }
                 }
             }
@@ -58,11 +85,19 @@ public static class MonsterBehaviorTreeFactory
                 tasks = { new SetMovementTargetPositionTask() },
                 transitions =
                 {
+                    // Close enough → attack
                     new TransitionConditionalWithTarget
                     {
                         trigger = TransitionTrigger.OnTick,
                         targetState = "AttackTarget",
                         conditions = { new TargetInAttackRangeCondition() }
+                    },
+                    // Reached last known position but target is gone → go search
+                    new TransitionConditionalWithTarget
+                    {
+                        trigger = TransitionTrigger.OnTick,
+                        targetState = "SearchForTarget",
+                        conditions = { new NotCondition(new HasTargetCondition()) }
                     }
                 }
             }
@@ -73,7 +108,17 @@ public static class MonsterBehaviorTreeFactory
                 name = "SearchForTarget",
                 selectionBehavior = SelectionBehavior.None,
                 entryConditions = { new NotCondition(new HasTargetCondition()) },
-                tasks = { new SearchForTargetTask() }
+                tasks = { new SearchForTargetTask() },
+                transitions =
+                {
+                    // Target found → start chasing
+                    new TransitionConditionalWithTarget
+                    {
+                        trigger = TransitionTrigger.OnTick,
+                        targetState = "ChaseTarget",
+                        conditions = { new HasTargetCondition() }
+                    }
+                }
             }
         );
 

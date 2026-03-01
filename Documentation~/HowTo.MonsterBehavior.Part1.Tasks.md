@@ -20,6 +20,14 @@ public class SearchForTargetTask : Task
         return TaskStatus.Running;
     }
 }
+```
+
+> **Note:** `SearchForTargetTask` intentionally returns `TaskStatus.Running` forever — it has no way to
+> complete on its own. That means the state will never exit by itself.
+> In a real world scenario, sub-states would make the monster idle around or wait/delay a bit.
+> This means for us, that an extra transition back to `SearchForTarget` is required on the other states to handle the case of losing the target.
+
+```csharp
 
 public class SetMovementTargetPositionTask : Task
 {
