@@ -134,7 +134,8 @@ namespace UnityStateTree.Test
             var context = new MockContext();
             context.SetValue("failed", false);
 
-            var failingTask = new MockTask { StatusToReturn = TaskStatus.Failure };
+            // Task returns Running on Enter, but Failure on Tick
+            var failingTask = new FailOnFirstTickTask();
             var failedStateTask = new CountingTask();
 
             var stateTree = new StateTreeObject

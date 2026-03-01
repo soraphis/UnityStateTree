@@ -134,6 +134,29 @@ namespace UnityStateTree.Test{
             }
         }
 
+        private class FailOnFirstTickTask : Task
+        {
+            private bool ticked;
+            public int TickCount { get; private set; }
+
+            public override TaskStatus OnEnterState(IStateTreeContext context)
+            {
+                ticked = false;
+                return TaskStatus.Running;
+            }
+
+            public override TaskStatus OnTick(IStateTreeContext context)
+            {
+                TickCount++;
+                if (!ticked)
+                {
+                    ticked = true;
+                    return TaskStatus.Failure;
+                }
+                return TaskStatus.Running;
+            }
+        }
+
         #endregion
     }
 }
