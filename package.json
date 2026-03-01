@@ -1,0 +1,14 @@
+﻿{
+  "name": "com.soraphis.unitystatetree",
+  "displayName": "Unity State Tree",
+  "version": "0.1.0",
+  "description": "A state machine framework for Unity.",
+  "unity": "6000.0",
+  "author": { "name": "Soraphis" },
+  "license": "MIT",
+  "keywords": ["state machine", "behavior tree", "game development"],
+  "dependencies": {
+  },
+  "samples": [
+  ]
+}

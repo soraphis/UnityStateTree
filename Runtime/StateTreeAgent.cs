@@ -1,6 +1,5 @@
-global using System;
-global using UnityEngine;
-global using System.Collections.Generic;
+using UnityEngine;
+using UnityStateTree.Internal;
 
 namespace UnityStateTree{
     public class StateTreeAgent : MonoBehaviour
