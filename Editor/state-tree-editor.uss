@@ -1,0 +1,76 @@
+﻿VisualElement.state-tree-root {
+    margin-left: -13px;
+    padding: 0;
+}
+
+.state-tree-root ScrollView {
+    padding-left: 12px;
+    padding-top: 12px;
+    flex-grow: 1;
+}
+
+.state-tree-root {
+    padding: 6px;
+}
+
+.state-tree-toolbar {
+    margin-bottom: 6px;
+}
+
+.state-list {
+    max-height: 400px;
+}
+
+.state-row {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 2px;
+}
+
+.state-box {
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-left-color: #555;
+    border-right-color: #555;
+    border-top-color: #555;
+    border-bottom-color: #555;
+    padding: 4px 8px;
+    background-color: #222;
+    color: #eee;
+}
+
+.state-box.selected {
+    background-color: #2b60a8;
+    border-left-color: #4ea0ff;
+    border-right-color: #4ea0ff;
+    border-top-color: #4ea0ff;
+    border-bottom-color: #4ea0ff;
+}
+
+.detail-drawer {
+    margin-top: 6px;
+    padding: 8px;
+    border-top-width: 1px;
+    border-top-color: #444;
+    min-height: 80px;
+    background-color: #2a2a2a;
+}
+
+/* inspector-like box for native feel */
+.inspector-box {
+    padding: 8px;
+    background-color: #2a2a2a;
+    border-top-width: 1px;
+    border-top-color: #333;
+}
+
+.help-box {
+    padding: 6px;
+    background-color: #2b2b2b;
+    border-left-width: 3px;
+    border-left-color: #3b3b3b;
+}
+
+/* keep file end */

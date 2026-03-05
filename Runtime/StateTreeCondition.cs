@@ -21,8 +21,10 @@ namespace UnityStateTree{
     [System.Serializable]
     public sealed class NotCondition : Condition
     {
-        public Condition condition;
+        [UnityEngine.SerializeReference] public Condition condition;
 
+        public NotCondition(){}
+        
         public NotCondition(Condition condition)
         {
             this.condition = condition;

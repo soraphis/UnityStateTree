@@ -15,11 +15,11 @@ namespace UnityStateTree
         public string name;
         public SelectionBehavior selectionBehavior = SelectionBehavior.SelectChildrenInOrder;
         public List<StateEntry> children = new();
-        public List<Condition> entryConditions = new();
-        public List<Task> tasks = new();
-        public List<Transition> transitions = new();
+        [UnityEngine.SerializeReference] public List<Condition> entryConditions = new();
+        [UnityEngine.SerializeReference] public List<Task> tasks = new();
+        [UnityEngine.SerializeReference] public List<Transition> transitions = new();
 
-        public StateEntry parent;
+        [UnityEngine.SerializeReference] public StateEntry parent;
         public int depth = -1;
 
         public StateEntry WithChild(StateEntry child)

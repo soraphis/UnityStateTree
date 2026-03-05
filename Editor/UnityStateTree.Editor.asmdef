@@ -2,7 +2,7 @@
     "name": "UnityStateTree.Editor",
     "rootNamespace": "StateTree.Editor",
     "references": [
-    ],
+    "GUID:391edab1e4dbe9342aca32847d634932"],
     "includePlatforms": [
         "Editor"
     ],

@@ -72,7 +72,7 @@ namespace UnityStateTree
     public class TransitionConditionalWithTarget : Transition
     {
         public string targetState;
-        public List<Condition> conditions = new();
+        [UnityEngine.SerializeReference] public List<Condition> conditions = new();
 
         public override bool IsValid(IStateTreeContext context)
         {

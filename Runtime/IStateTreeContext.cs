@@ -3,6 +3,8 @@ namespace UnityStateTree
     public interface IStateTreeContext
     {
         public bool TryGetValue<T>(string key, out T value);
+        
+        void SetValue<T>(string key, T value);
     }
 
     public struct StateTreeContextSelector<T>

@@ -4,15 +4,15 @@ using UnityStateTree.Internal;
 namespace UnityStateTree{
     public class StateTreeAgent : MonoBehaviour
     {
-        public StateTreeObject stateTree;
+        public StateTreeAsset stateTreeAsset;
         public IStateTreeContext context;
 
         private StateTreeRunner runner = new();
         
         void OnEnable()
         {
-            if(this.DisableSelfOnTrue(stateTree == null)) return;
-            runner.OnEnable(stateTree, context);
+            if(this.DisableSelfOnTrue(stateTreeAsset == null)) return;
+            runner.OnEnable(stateTreeAsset.stateTree, context);
             if (this.DisableSelfOnTrue(runner.CurrentState == null)) return;
         }
 
