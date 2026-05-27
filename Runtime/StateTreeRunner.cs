@@ -76,9 +76,13 @@ namespace UnityStateTree
         private Transition queuedTransition = null;
         private void CompleteState(TransitionTrigger trigger)
         {
-            queuedTransition = currentState.transitions
-                               .FirstOrDefaultFast(t => t.trigger == trigger && t.IsValid(context))
-                               ?? Transition.DefaultTransition;
+            queuedTransition = Transition.DefaultTransition;
+            foreach (var transition in currentState.transitions)
+            {
+                if (transition.trigger != trigger || !transition.IsValid(context)) continue;
+                queuedTransition = transition;
+                break;
+            }
         }
 
         public void Update()

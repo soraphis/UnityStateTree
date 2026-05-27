@@ -32,7 +32,11 @@ namespace UnityStateTree
 
         private bool EvaluateConditions(IStateTreeContext context)
         {
-            return entryConditions.AllFast(entryCondition => entryCondition.DoEvaluate(context));
+            for (var i = 0; i < entryConditions.Count; i++)
+            {
+                if(!entryConditions[i].DoEvaluate(context)) return false;
+            }
+            return true;
         }
 
         public bool TryEvaluate()

@@ -28,7 +28,7 @@ namespace UnityStateTree
     [System.Serializable]
     public class TransitionSimple : Transition
     {
-        public TransitionTargetType targetType = TransitionTargetType.ToRoot;
+        public TransitionTargetType targetType = TransitionTargetType.Default;
 
         public override StateEntry ResolveTarget(StateTreeObject stateTree, StateEntry currentState, IStateTreeContext context)
         {
@@ -36,11 +36,24 @@ namespace UnityStateTree
 
             return targetType switch
             {
+                TransitionTargetType.Default => ResolveDefault(currentState, stateTree, context),
                 TransitionTargetType.ToRoot => stateTree.rootState.TrySelect(context),
                 TransitionTargetType.ToParent => currentState?.parent?.TrySelect(context) ?? stateTree.rootState.TrySelect(context),
                 TransitionTargetType.ToNextSibling => ResolveNextSibling(stateTree.rootState, currentState, context),
                 _ => stateTree.rootState.TrySelect(context)
             };
+        }
+
+        private StateEntry ResolveDefault(StateEntry currentState, StateTreeObject stateTree, IStateTreeContext context)
+        {
+            if (currentState == null) return stateTree.rootState.TrySelect(context);
+            var parent = currentState?.parent;
+            if (parent == null) return stateTree.rootState.TrySelect(context);
+            if (parent.selectionBehavior == SelectionBehavior.SelectChildrenInOrder)
+            {
+                return ResolveNextSibling(stateTree.rootState, currentState, context);
+            }
+            return currentState.parent.TrySelect(context);
         }
 
         private static StateEntry ResolveNextSibling(StateEntry rootState, StateEntry currentState, IStateTreeContext context)
@@ -62,6 +75,7 @@ namespace UnityStateTree
 
         public enum TransitionTargetType
         {
+            Default,
             ToRoot,
             ToParent,
             ToNextSibling,

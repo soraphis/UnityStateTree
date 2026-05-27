@@ -1,6 +1,3 @@
-using UnityStateTree.Internal;
-
-
 namespace UnityStateTree{
     
     [System.Serializable]
@@ -33,6 +30,20 @@ namespace UnityStateTree{
         public override bool Evaluate(IStateTreeContext context)
         {
             return !condition.DoEvaluate(context);
+        }
+    }
+
+    [System.Serializable]
+    public class Condition<TContext> : Condition
+    {
+        public sealed override bool Evaluate(IStateTreeContext context)
+        {
+            return Evaluate(((IStateTreeContext<TContext>)context).TypedContext);
+        }
+
+        public virtual bool Evaluate(TContext context)
+        {
+            return true;
         }
     }
 }
