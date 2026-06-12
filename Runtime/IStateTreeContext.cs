@@ -7,6 +7,11 @@ namespace UnityStateTree
         void SetValue<T>(string key, T value);
     }
 
+    public interface IStateTreeContext<out TContext> : IStateTreeContext
+    {
+        TContext TypedContext { get; }
+    }
+
     public struct StateTreeContextSelector<T>
     {
         public string key;

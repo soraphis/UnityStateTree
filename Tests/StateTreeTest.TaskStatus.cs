@@ -1,5 +1,4 @@
 using NUnit.Framework;
-using UnityStateTree;
 
 namespace UnityStateTree.Test
 {
@@ -14,11 +13,10 @@ namespace UnityStateTree.Test
             var mockTask = new MockTask { StatusToReturn = TaskStatus.Success };
             var stateTree = new StateTreeObject
             {
-                rootState = new StateEntry
+                rootState = new ActionState
                 {
                     name = "Root",
                     depth = 0,
-                    selectionBehavior = SelectionBehavior.None,
                     tasks = { mockTask }
                 }
             };
@@ -36,11 +34,10 @@ namespace UnityStateTree.Test
             var mockTask = new MockTask { StatusToReturn = TaskStatus.Failure };
             var stateTree = new StateTreeObject
             {
-                rootState = new StateEntry
+                rootState = new ActionState
                 {
                     name = "Root",
                     depth = 0,
-                    selectionBehavior = SelectionBehavior.None,
                     tasks = { mockTask }
                 }
             };
@@ -58,11 +55,10 @@ namespace UnityStateTree.Test
             var mockTask = new MockTask { StatusToReturn = TaskStatus.Running };
             var stateTree = new StateTreeObject
             {
-                rootState = new StateEntry
+                rootState = new ActionState
                 {
                     name = "Root",
                     depth = 0,
-                    selectionBehavior = SelectionBehavior.None,
                     tasks = { mockTask }
                 }
             };
@@ -87,11 +83,10 @@ namespace UnityStateTree.Test
 
             var stateTree = new StateTreeObject
             {
-                rootState = new StateEntry { name = "Root", depth = 0, selectionBehavior = SelectionBehavior.SelectChildrenInOrder }
-                    .WithChild(new StateEntry
+                rootState = new SelectInOrder { name = "Root", depth = 0 }
+                    .WithChild(new ActionState
                     {
                         name = "Work",
-                        selectionBehavior = SelectionBehavior.None,
                         entryConditions = { new MockContextCondition("completed", false) },
                         tasks = { completingTask },
                         transitions =
@@ -103,10 +98,9 @@ namespace UnityStateTree.Test
                             }
                         }
                     })
-                    .WithChild(new StateEntry
+                    .WithChild(new ActionState
                     {
                         name = "Done",
-                        selectionBehavior = SelectionBehavior.None,
                         entryConditions = { new MockContextCondition("completed", true) },
                         tasks = { fallbackTask }
                     })
@@ -134,17 +128,15 @@ namespace UnityStateTree.Test
             var context = new MockContext();
             context.SetValue("failed", false);
 
-            // Task returns Running on Enter, but Failure on Tick
             var failingTask = new FailOnFirstTickTask();
             var failedStateTask = new CountingTask();
 
             var stateTree = new StateTreeObject
             {
-                rootState = new StateEntry { name = "Root", depth = 0, selectionBehavior = SelectionBehavior.SelectChildrenInOrder }
-                    .WithChild(new StateEntry
+                rootState = new SelectInOrder { name = "Root", depth = 0 }
+                    .WithChild(new ActionState
                     {
                         name = "Work",
-                        selectionBehavior = SelectionBehavior.None,
                         entryConditions = { new MockContextCondition("failed", false) },
                         tasks = { failingTask },
                         transitions =
@@ -156,10 +148,9 @@ namespace UnityStateTree.Test
                             }
                         }
                     })
-                    .WithChild(new StateEntry
+                    .WithChild(new ActionState
                     {
                         name = "Failed",
-                        selectionBehavior = SelectionBehavior.None,
                         entryConditions = { new MockContextCondition("failed", true) },
                         tasks = { failedStateTask }
                     })

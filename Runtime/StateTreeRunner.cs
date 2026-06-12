@@ -29,7 +29,7 @@ namespace UnityStateTree
             if (newState == null) return;
             while (currentState != null && !IsAncestorOf(currentState, newState))
             {
-                currentState.tasks.ForEach(task => task.OnExitState(context));
+                foreach (var task in currentState.tasks) task.OnExitState(context);
                 currentState = currentState.parent;
             }
 

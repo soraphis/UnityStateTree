@@ -22,7 +22,7 @@ namespace UnityStateTree.Test
         {
             var stateTree = new StateTreeObject
             {
-                rootState = new StateEntry { name = "Root", depth = 0 }
+                rootState = new SelectInOrder { name = "Root", depth = 0 }
             };
             var runner = new StateTreeRunner();
 

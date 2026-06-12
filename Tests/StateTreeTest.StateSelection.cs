@@ -1,5 +1,4 @@
 using NUnit.Framework;
-using UnityStateTree;
 
 namespace UnityStateTree.Test
 {
@@ -13,11 +12,10 @@ namespace UnityStateTree.Test
             var context = new MockContext();
             var stateTree = new StateTreeObject
             {
-                rootState = new StateEntry
+                rootState = new ActionState
                 {
                     name = "RootState",
                     depth = 0,
-                    selectionBehavior = SelectionBehavior.None
                 }
             };
             var runner = new StateTreeRunner();
@@ -34,11 +32,10 @@ namespace UnityStateTree.Test
             var context = new MockContext();
             var stateTree = new StateTreeObject
             {
-                rootState = new StateEntry
+                rootState = new ActionState
                 {
                     name = "RootState",
                     depth = 0,
-                    selectionBehavior = SelectionBehavior.None,
                     entryConditions = { new MockTrueCondition() }
                 }
             };
@@ -56,11 +53,10 @@ namespace UnityStateTree.Test
             var context = new MockContext();
             var stateTree = new StateTreeObject
             {
-                rootState = new StateEntry
+                rootState = new ActionState
                 {
                     name = "RootState",
                     depth = 0,
-                    selectionBehavior = SelectionBehavior.None,
                     entryConditions = { new MockFalseCondition() }
                 }
             };
@@ -77,17 +73,15 @@ namespace UnityStateTree.Test
             var context = new MockContext();
             var stateTree = new StateTreeObject
             {
-                rootState = new StateEntry { name = "Root", depth = 0 }
-                    .WithChild(new StateEntry
+                rootState = new SelectInOrder { name = "Root", depth = 0 }
+                    .WithChild(new ActionState
                     {
                         name = "FirstChild",
-                        selectionBehavior = SelectionBehavior.None,
                         entryConditions = { new MockFalseCondition() }
                     })
-                    .WithChild(new StateEntry
+                    .WithChild(new ActionState
                     {
                         name = "SecondChild",
-                        selectionBehavior = SelectionBehavior.None,
                         entryConditions = { new MockTrueCondition() }
                     })
             };
@@ -105,17 +99,15 @@ namespace UnityStateTree.Test
             var context = new MockContext();
             var stateTree = new StateTreeObject
             {
-                rootState = new StateEntry { name = "Root", depth = 0 }
-                    .WithChild(new StateEntry
+                rootState = new SelectInOrder { name = "Root", depth = 0 }
+                    .WithChild(new ActionState
                     {
                         name = "FirstChild",
-                        selectionBehavior = SelectionBehavior.None,
                         entryConditions = { new MockTrueCondition() }
                     })
-                    .WithChild(new StateEntry
+                    .WithChild(new ActionState
                     {
                         name = "SecondChild",
-                        selectionBehavior = SelectionBehavior.None,
                         entryConditions = { new MockTrueCondition() }
                     })
             };
@@ -133,12 +125,11 @@ namespace UnityStateTree.Test
             var context = new MockContext();
             var stateTree = new StateTreeObject
             {
-                rootState = new StateEntry { name = "Root", depth = 0 }
-                    .WithChild(new StateEntry { name = "Parent" }
-                        .WithChild(new StateEntry
+                rootState = new SelectInOrder { name = "Root", depth = 0 }
+                    .WithChild(new SelectInOrder { name = "Parent" }
+                        .WithChild(new ActionState
                         {
                             name = "DeepChild",
-                            selectionBehavior = SelectionBehavior.None
                         })
                     )
             };
@@ -157,17 +148,15 @@ namespace UnityStateTree.Test
             context.SetValue("hasTarget", true);
             var stateTree = new StateTreeObject
             {
-                rootState = new StateEntry { name = "Root", depth = 0 }
-                    .WithChild(new StateEntry
+                rootState = new SelectInOrder { name = "Root", depth = 0 }
+                    .WithChild(new ActionState
                     {
                         name = "WithTarget",
-                        selectionBehavior = SelectionBehavior.None,
                         entryConditions = { new MockContextCondition("hasTarget", true) }
                     })
-                    .WithChild(new StateEntry
+                    .WithChild(new ActionState
                     {
                         name = "WithoutTarget",
-                        selectionBehavior = SelectionBehavior.None
                     })
             };
             var runner = new StateTreeRunner();

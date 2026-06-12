@@ -13,6 +13,11 @@ namespace UnityStateTree{
         {
             return true;
         }
+        
+        public virtual string GetDescription()
+        {
+            return GetType().Name;
+        }
     }
 
     [System.Serializable]
@@ -30,6 +35,11 @@ namespace UnityStateTree{
         public override bool Evaluate(IStateTreeContext context)
         {
             return !condition.DoEvaluate(context);
+        }
+
+        public override string GetDescription()
+        {
+            return $"Not({condition.GetDescription()})";
         }
     }
 

@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using UnityStateTree.Internal;
 
 namespace UnityStateTree
 {
@@ -49,7 +48,7 @@ namespace UnityStateTree
             if (currentState == null) return stateTree.rootState.TrySelect(context);
             var parent = currentState?.parent;
             if (parent == null) return stateTree.rootState.TrySelect(context);
-            if (parent.selectionBehavior == SelectionBehavior.SelectChildrenInOrder)
+            if (parent is SelectInOrder)
             {
                 return ResolveNextSibling(stateTree.rootState, currentState, context);
             }
@@ -83,6 +82,21 @@ namespace UnityStateTree
     }
 
     [System.Serializable]
+    public class TransitionSimpleConditional : TransitionSimple
+    {
+        [UnityEngine.SerializeReference] public List<Condition> conditions = new();
+
+        public override bool IsValid(IStateTreeContext context)
+        {
+            for (var i = 0; i < conditions.Count; i++)
+            {
+                if (!conditions[i].DoEvaluate(context)) return false;
+            }
+            return true;
+        }
+    }
+
+    [System.Serializable]
     public class TransitionConditionalWithTarget : Transition
     {
         public string targetState;
@@ -90,7 +104,11 @@ namespace UnityStateTree
 
         public override bool IsValid(IStateTreeContext context)
         {
-            return conditions.AllFast(condition => condition.DoEvaluate(context));
+            for (var i = 0; i < conditions.Count; i++)
+            {
+                if (!conditions[i].DoEvaluate(context)) return false;
+            }
+            return true;
         }
 
         public override StateEntry ResolveTarget(StateTreeObject stateTree, StateEntry currentState, IStateTreeContext context)

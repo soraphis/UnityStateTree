@@ -8,54 +8,19 @@ namespace UnityStateTree.Test
         #region Selection Behavior Tests
 
         [Test]
-        public void SelectionBehavior_Default_IsSelectChildrenInOrder()
-        {
-            var state = new StateEntry();
-
-            Assert.AreEqual(SelectionBehavior.SelectChildrenInOrder, state.selectionBehavior);
-        }
-
-        [Test]
-        public void SelectionBehaviorNone_StopsAtCurrentState()
+        public void SelectInOrder_SelectsFirstValidChild()
         {
             var context = new MockContext();
             var stateTree = new StateTreeObject
             {
-                rootState = new StateEntry
+                rootState = new SelectInOrder
                 {
                     name = "Root",
                     depth = 0,
-                    selectionBehavior = SelectionBehavior.None
                 }
-                    .WithChild(new StateEntry
-                    {
-                        name = "ShouldNotBeSelected",
-                        selectionBehavior = SelectionBehavior.None
-                    })
-            };
-            var runner = new StateTreeRunner();
-
-            runner.OnEnable(stateTree, context);
-
-            Assert.AreEqual("Root", runner.CurrentState.name);
-        }
-
-        [Test]
-        public void SelectionBehaviorSelectChildrenInOrder_SelectsFirstValidChild()
-        {
-            var context = new MockContext();
-            var stateTree = new StateTreeObject
-            {
-                rootState = new StateEntry
-                {
-                    name = "Root",
-                    depth = 0,
-                    selectionBehavior = SelectionBehavior.SelectChildrenInOrder
-                }
-                    .WithChild(new StateEntry
+                    .WithChild(new ActionState
                     {
                         name = "Child",
-                        selectionBehavior = SelectionBehavior.None
                     })
             };
             var runner = new StateTreeRunner();
@@ -66,16 +31,15 @@ namespace UnityStateTree.Test
         }
 
         [Test]
-        public void SelectionBehaviorSelectChildrenInOrder_WithNoChildren_BehavesLikeNone()
+        public void SelectInOrder_WithNoChildren_BehavesLikeLeaf()
         {
             var context = new MockContext();
             var stateTree = new StateTreeObject
             {
-                rootState = new StateEntry
+                rootState = new SelectInOrder
                 {
                     name = "Root",
                     depth = 0,
-                    selectionBehavior = SelectionBehavior.SelectChildrenInOrder
                 }
             };
             var runner = new StateTreeRunner();
@@ -87,23 +51,39 @@ namespace UnityStateTree.Test
         }
 
         [Test]
-        public void TryEvaluateChildrenInOrder_WithNestedValidBranch_ReturnsTrue()
+        public void ActionState_StopsAtCurrentState()
         {
-            var root = new StateEntry
+            var context = new MockContext();
+            var stateTree = new StateTreeObject
+            {
+                rootState = new ActionState
+                {
+                    name = "Root",
+                    depth = 0,
+                }
+            };
+            var runner = new StateTreeRunner();
+
+            runner.OnEnable(stateTree, context);
+
+            Assert.AreEqual("Root", runner.CurrentState.name);
+        }
+
+        [Test]
+        public void TryEvaluate_WithNestedValidBranch_ReturnsTrue()
+        {
+            var root = new SelectInOrder
             {
                 name = "Root",
                 depth = 0,
-                selectionBehavior = SelectionBehavior.SelectChildrenInOrder
             }
-            .WithChild(new StateEntry
+            .WithChild(new SelectInOrder
             {
                 name = "Branch",
-                selectionBehavior = SelectionBehavior.SelectChildrenInOrder
             }
-            .WithChild(new StateEntry
+            .WithChild(new ActionState
             {
                 name = "Leaf",
-                selectionBehavior = SelectionBehavior.None
             }));
 
             Assert.IsTrue(root.TryEvaluate());

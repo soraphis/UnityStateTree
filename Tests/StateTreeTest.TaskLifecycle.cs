@@ -1,5 +1,4 @@
 using NUnit.Framework;
-using UnityStateTree;
 
 namespace UnityStateTree.Test
 {
@@ -14,11 +13,10 @@ namespace UnityStateTree.Test
             var mockTask = new MockTask();
             var stateTree = new StateTreeObject
             {
-                rootState = new StateEntry
+                rootState = new ActionState
                 {
                     name = "Root",
                     depth = 0,
-                    selectionBehavior = SelectionBehavior.None,
                     tasks = { mockTask }
                 }
             };
@@ -38,11 +36,10 @@ namespace UnityStateTree.Test
             var mockTask = new MockTask();
             var stateTree = new StateTreeObject
             {
-                rootState = new StateEntry
+                rootState = new ActionState
                 {
                     name = "Root",
                     depth = 0,
-                    selectionBehavior = SelectionBehavior.None,
                     tasks = { mockTask }
                 }
             };
@@ -66,11 +63,10 @@ namespace UnityStateTree.Test
             var task3 = new MockTask();
             var stateTree = new StateTreeObject
             {
-                rootState = new StateEntry
+                rootState = new ActionState
                 {
                     name = "Root",
                     depth = 0,
-                    selectionBehavior = SelectionBehavior.None,
                     tasks = { task1, task2, task3 }
                 }
             };
